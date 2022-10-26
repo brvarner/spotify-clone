@@ -3,12 +3,12 @@ import { Text, View, FlatList } from "react-native";
 import { useRoute } from "@react-navigation/native";
 import albumDetails from "../data/albumDetails";
 import { SongListItem, AlbumHeader } from "../components";
+import { useNavigation } from "@react-navigation/native";
 
 const album = albumDetails;
 
 const AlbumScreen = () => {
-  const route = useRoute();
-
+  const navigation = useNavigation();
   useEffect(() => {}, []);
 
   return (

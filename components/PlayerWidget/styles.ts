@@ -3,15 +3,12 @@ import Colors from "../../constants/Colors";
 
 export const styles = StyleSheet.create({
   container: {
-    display: "flex",
     position: "absolute",
-    flexDirection: "row",
     bottom: "6%",
     backgroundColor: Colors.darkModeGray,
     width: "100%",
     borderBottomColor: "black",
     borderBottomWidth: 1,
-    alignItems: "center",
   },
   rightContainer: {
     justifyContent: "space-between",
@@ -21,25 +18,31 @@ export const styles = StyleSheet.create({
   },
   nameContainer: {
     flexDirection: "row",
-    alignItems: 'center',
+    alignItems: "center",
   },
   iconContainer: {
     flexDirection: "row",
-    alignItems: 'center',
+    alignItems: "center",
     width: 100,
-    justifyContent: 'space-around'
+    justifyContent: "space-around",
   },
   title: {
     color: "white",
-    fontSize: 18,
-    margin: 10,
+    fontSize: 15,
   },
   artist: {
     color: "lightgray",
-    fontSize: 18,
+    fontSize: 15,
   },
   image: {
     width: 75,
     height: 75,
+  },
+  progress: {
+    height: 3,
+    backgroundColor: "hsla(0, 0%, 74%, 1)",
+  },
+  row: {
+    flexDirection: "row",
   },
 });
