@@ -4,29 +4,30 @@ input AMPLIFY {
   globalAuthRule: AuthRule = { allow: public }
 } # FOR TESTING ONLY!
 type AlbumCategory @model {
-  id: ID!
+  id: ID! @primaryKey
   title: String!
-  albums: [Album] @connection(keyName: "byAlbumCategory", fields: ["id"])
+  albums: [Album] @hasMany(indexName: "byAlbumCategory", fields: ["id"])
 }
 
-type Album @model @key(name: "byAlbumCategory", fields: ["albumCategoryId"]) {
-  id: ID!
+type Album @model {
+  id: ID! @primaryKey
   name: String!
   by: String!
   numberOfLikes: Int!
   imageUri: String!
   artistsHeadline: String!
-  songs: [Songs] @connection(keyName: "byAlbum", fields: ["id"])
-  albumCategoryId: ID!
-  albumCategory: AlbumCategory @connection(fields: ["albumCategoryId"])
+  songs: [Song] @hasMany(indexName: "byAlbum", fields: ["id"])
+  albumCategoryId: ID! @index(name: "byAlbumCategory")
+  albumCategory: AlbumCategory @belongsTo(fields: ["albumCategoryId"])
 }
 
-type Song @model @key(name: "byAlbum", fields: ["albumId"]) {
-  id: ID!
+type Song @model {
+  id: ID! @primaryKey
+  imageUri: String!
   uri: String!
   title: String!
   artist: String!
 
-  albumId: ID!
-  album: Album @connection(fields: ["albumId"])
+  albumId: ID! @index(name: "byAlbum")
+  album: Album @belongsTo(fields: ["albumId"])
 }

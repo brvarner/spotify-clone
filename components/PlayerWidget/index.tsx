@@ -1,9 +1,11 @@
 import { View, Text, Image, TouchableOpacity, AppState } from "react-native";
 import { styles } from "./styles";
 import { FontAwesome, EvilIcons } from "@expo/vector-icons";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Sound } from "expo-av/build/Audio/Sound";
-import { useNavigation } from "@react-navigation/native";
+import { AppContext } from "../../AppContext";
+import { API, graphqlOperation } from "aws-amplify";
+import { getSong } from "../../src/graphql/queries";
 
 const song = {
   id: "1",
@@ -15,10 +17,12 @@ const song = {
 };
 
 const PlayerWidget = () => {
+  const [song, setSong] = useState(null);
   const [sound, setSound] = useState<Sound | null>(null);
   const [isPlaying, setIsPlaying] = useState<boolean>(true);
   const [duration, setDuration] = useState<number | null>(null);
   const [position, setPosition] = useState<number | null>(null);
+  const { songId } = useContext(AppContext);
 
   const onPlaybackStatusUpdate = (status) => {
     setIsPlaying(status.isPlaying);
@@ -58,9 +62,28 @@ const PlayerWidget = () => {
     return (position / duration) * 100;
   };
 
+  const fetchSong = async () => {
+    try {
+      const data = await API.graphql(graphqlOperation(getSong, { id: songId }));
+      setSong(data.data.getSong);
+    } catch (e) {
+      console.log("error", e);
+    }
+  };
+
   useEffect(() => {
-    playCurrentSong();
-  }, []);
+    fetchSong();
+  }, [songId]);
+
+  useEffect(() => {
+    if (song) {
+      playCurrentSong();
+    }
+  }, [song]);
+
+  if (!song) {
+    return null;
+  }
 
   return (
     // Still trying to figure out how to dynamically set up the player widget to remove its

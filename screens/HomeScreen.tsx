@@ -1,17 +1,33 @@
-import { StyleSheet, FlatList } from "react-native";
-import albumCategories from "../data/albumCategories";
-import { AlbumCategory, Text, View } from "../components";
+import { API, graphqlOperation } from "aws-amplify";
+import { useEffect, useState } from "react";
+import { FlatList, StyleSheet } from "react-native";
+import { AlbumCategory, View } from "../components";
+import { listAlbumCategories } from "../src/graphql/queries";
 import { RootTabScreenProps } from "../types";
 
 export default function HomeScreen({
   navigation,
 }: RootTabScreenProps<"TabOne">) {
+  const [categories, setCategories] = useState([]);
+
+  const fetchAlbumCategories = async () => {
+    try {
+      const data = await API.graphql(graphqlOperation(listAlbumCategories));
+      setCategories(data.data.listAlbumCategories.items);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  useEffect(() => {
+    fetchAlbumCategories();
+  }, []);
   return (
     <View style={styles.container}>
       <FlatList
-        data={albumCategories}
+        data={categories}
         renderItem={({ item }) => (
-          <AlbumCategory title={item.title} albums={item.albums} />
+          <AlbumCategory title={item.title} albums={item.albums.items} />
         )}
         keyExtractor={(item) => item.id}
       />
